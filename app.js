@@ -1,5 +1,5 @@
 const STORAGE_KEY = "wf_presets_v1";
-const BUILD = "Step 5 build: STEP5-2 👀 (preview fixed)";
+const BUILD = "Step 6 build: STEP6-1 🔗";
 
 function uid() {
   return Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -32,6 +32,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const editorTitle = document.getElementById("editorTitle");
   const backBtn = document.getElementById("backBtn");
   const saveContentBtn = document.getElementById("saveContentBtn");
+  const exportBtn = document.getElementById("exportBtn");
 
   const previewBox = document.getElementById("previewBox");
 
@@ -94,6 +95,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!preset) return;
 
     activePresetId = id;
+
     homeScreen.style.display = "none";
     editorScreen.style.display = "block";
 
@@ -103,6 +105,7 @@ window.addEventListener("DOMContentLoaded", () => {
       photoFields.style.display = "none";
 
       contentInput.value = preset.data.quote || "";
+      // stats optional; keep existing inputs as-is
       previewDashboard();
     } else {
       editorTitle.textContent = "Edit Photo Tile";
@@ -149,12 +152,19 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (preset.type === "dashboard") {
       preset.data.quote = contentInput.value;
+      // keep stats out for now (already stored in earlier step builds)
     } else {
       preset.data.caption = photoCaptionInput.value;
       preset.data.image = tempImage;
     }
 
     savePresets(presets);
+  };
+
+  exportBtn.onclick = () => {
+    if (!activePresetId) return;
+    // open the widget view page for this preset
+    window.open(`widget.html#${activePresetId}`, "_blank");
   };
 
   backBtn.onclick = () => {
@@ -165,15 +175,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
   createBtn.onclick = () => {
     if (!presetName.value) return;
+
     const presets = loadPresets();
     presets.unshift({
       id: uid(),
       name: presetName.value,
       type: presetType.value,
       data: presetType.value === "dashboard"
-        ? { quote: "" }
+        ? { quote: "", stats: [] }
         : { caption: "", image: null }
     });
+
     savePresets(presets);
     presetName.value = "";
     render();

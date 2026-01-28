@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Widget View</title>
+  <meta name="theme-color" content="#111111">
+  <style>
+    body { margin:0; font-family: -apple-system, system-ui, Arial; background:#0b0b0f; color:white; }
+    .wrap { padding: 18px; }
+    .box {
+      background:#111;
+      border-radius:22px;
+      padding: 18px;
+      min-height: 160px;
+    }
+    .hint { opacity:.7; font-size: 13px; margin-top: 10px; }
+    img { width:100%; border-radius:16px; margin-bottom: 10px; display:block; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="box" class="box">Loading widget…</div>
+    <div class="hint">Tip: Use iOS Share → “Add to Home Screen” to pin this view.</div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "wf_presets_v1";
+    function loadPresets() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    const id = (location.hash || "").replace("#", "");
+    const box = document.getElementById("box");
+    const preset = loadPresets().find(p => p.id === id);
+
+    if (!preset) {
+      box.textContent = "Preset not found. Go back and export again.";
+    } else if (preset.type === "photoTile") {
+      box.innerHTML = `
+        ${preset.data.image ? `<img src="${preset.data.image}">` : ""}
+        <div style="font-size:16px">${preset.data.caption || ""}</div>
+      `;
+    } else {
+      const quote = preset.data.quote || "";
+      const stats = Array.isArray(preset.data.stats) ? preset.data.stats : [];
+      const s1 = stats[0] || {};
+      const s2 = stats[1] || {};
+      const s3 = stats[2] || {};
+      box.innerHTML = `
+        <div style="font-size:18px;margin-bottom:12px">${quote}</div>
+        <div style="display:flex;gap:12px;font-size:13px">
+          <div><strong>${s1.value || "—"}</strong> ${s1.unit || ""}<br>${s1.label || ""}</div>
+          <div><strong>${s2.value || "—"}</strong> ${s2.unit || ""}<br>${s2.label || ""}</div>
+          <div><strong>${s3.value || "—"}</strong> ${s3.unit || ""}<br>${s3.label || ""}</div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
