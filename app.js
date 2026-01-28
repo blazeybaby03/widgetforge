@@ -1,4 +1,5 @@
 const STORAGE_KEY = "wf_presets_v1";
+const BUILD = "Step 3 build: STEP3-1 ✅";
 
 function uid() {
   return Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -27,6 +28,10 @@ function escapeHtml(str) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  // Build tag (permanent)
+  const buildTag = document.getElementById("buildTag");
+  if (buildTag) buildTag.textContent = BUILD;
+
   // HOME
   const presetName = document.getElementById("presetName");
   const presetType = document.getElementById("presetType");
@@ -82,9 +87,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }, 1400);
   }
 
-  // Proof JS is running (quietly)
-  setStatus("JS running ✅");
-
   function render() {
     if (!presetList) return;
 
@@ -114,7 +116,6 @@ window.addEventListener("DOMContentLoaded", () => {
       presetList.appendChild(row);
     }
 
-    // Delete
     presetList.querySelectorAll("[data-del]").forEach(btn => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -126,7 +127,6 @@ window.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Edit
     presetList.querySelectorAll("[data-edit]").forEach(el => {
       el.addEventListener("click", () => openEditor(el.getAttribute("data-edit")));
     });
@@ -168,12 +168,10 @@ window.addEventListener("DOMContentLoaded", () => {
       if (editorTitle) editorTitle.textContent = "Edit Photo Tile";
       if (dashboardFields) dashboardFields.style.display = "none";
       if (photoFields) photoFields.style.display = "block";
-
       if (photoCaptionInput) photoCaptionInput.value = preset.data?.caption || "";
     }
   }
 
-  // CREATE PRESET
   if (createBtn) {
     createBtn.addEventListener("click", () => {
       const name = (presetName?.value || "").trim();
@@ -213,7 +211,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // SAVE CONTENT
   if (saveContentBtn) {
     saveContentBtn.addEventListener("click", () => {
       const presets = loadPresets();
@@ -236,7 +233,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // BACK
   if (backBtn) {
     backBtn.addEventListener("click", () => {
       if (editorScreen) editorScreen.style.display = "none";
@@ -246,7 +242,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // WIPE ALL
   if (wipeBtn) {
     wipeBtn.addEventListener("click", () => {
       const ok = confirm("Delete ALL presets? This cannot be undone.");
