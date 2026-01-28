@@ -1,4 +1,3 @@
-alert("app.js loaded");
 const STORAGE_KEY = "wf_presets_v1";
 
 function uid() {
@@ -36,9 +35,26 @@ window.addEventListener("DOMContentLoaded", () => {
   const statusEl = document.getElementById("status");
 
   const homeScreen = document.getElementById("homeScreen");
-  const editorScreen = document.getElementById("editorScreen");
-  const editorTitle = document.getElementById("editorTitle");
-  const contentInput = document.getElementById("contentInput");
+const editorScreen = document.getElementById("editorScreen");
+const editorTitle = document.getElementById("editorTitle");
+
+const dashboardFields = document.getElementById("dashboardFields");
+const photoFields = document.getElementById("photoFields");
+
+const contentInput = document.getElementById("contentInput"); // dashboard quote
+const photoCaptionInput = document.getElementById("photoCaptionInput"); // photo caption
+
+const s1Label = document.getElementById("s1Label");
+const s1Value = document.getElementById("s1Value");
+const s1Unit  = document.getElementById("s1Unit");
+
+const s2Label = document.getElementById("s2Label");
+const s2Value = document.getElementById("s2Value");
+const s2Unit  = document.getElementById("s2Unit");
+
+const s3Label = document.getElementById("s3Label");
+const s3Value = document.getElementById("s3Value");
+const s3Unit  = document.getElementById("s3Unit");
   const saveContentBtn = document.getElementById("saveContentBtn");
   const editorStatus = document.getElementById("editorStatus");
   const backBtn = document.getElementById("backBtn");
@@ -76,14 +92,34 @@ window.addEventListener("DOMContentLoaded", () => {
     homeScreen.style.display = "none";
     editorScreen.style.display = "block";
 
-    editorTitle.textContent =
-      preset.type === "dashboard" ? "Edit Dashboard Quote" : "Edit Photo Caption";
+	if (preset.type === "dashboard") {
+  editorTitle.textContent = "Edit Dashboard";
+  if (dashboardFields) dashboardFields.style.display = "block";
+  if (photoFields) photoFields.style.display = "none";
 
-    contentInput.value =
-      preset.type === "dashboard"
-        ? (preset.data.quote || "")
-        : (preset.data.caption || "");
-  }
+  if (contentInput) contentInput.value = preset.data.quote || "";
+
+  const stats = preset.data.stats || [{}, {}, {}];
+
+  if (s1Label) s1Label.value = stats[0]?.label || "";
+  if (s1Value) s1Value.value = stats[0]?.value || "";
+  if (s1Unit)  s1Unit.value  = stats[0]?.unit  || "";
+
+  if (s2Label) s2Label.value = stats[1]?.label || "";
+  if (s2Value) s2Value.value = stats[1]?.value || "";
+  if (s2Unit)  s2Unit.value  = stats[1]?.unit  || "";
+
+  if (s3Label) s3Label.value = stats[2]?.label || "";
+  if (s3Value) s3Value.value = stats[2]?.value || "";
+  if (s3Unit)  s3Unit.value  = stats[2]?.unit  || "";
+
+} else {
+  editorTitle.textContent = "Edit Photo Tile";
+  if (dashboardFields) dashboardFields.style.display = "none";
+  if (photoFields) photoFields.style.display = "block";
+
+  if (photoCaptionInput) photoCaptionInput.value = preset.data.caption || "";
+}
 
   function render() {
     if (!presetList) return;
@@ -181,10 +217,17 @@ window.addEventListener("DOMContentLoaded", () => {
       const preset = presets.find(p => p.id === activePresetId);
       if (!preset) return;
 
-      const text = (contentInput?.value || "").trim();
+	  if (preset.type === "dashboard") {
+  preset.data.quote = (contentInput?.value || "").trim();
 
-      if (preset.type === "dashboard") preset.data.quote = text;
-      else preset.data.caption = text;
+  preset.data.stats = [
+    { label: (s1Label?.value || "").trim(), value: (s1Value?.value || "").trim(), unit: (s1Unit?.value || "").trim() },
+    { label: (s2Label?.value || "").trim(), value: (s2Value?.value || "").trim(), unit: (s2Unit?.value || "").trim() },
+    { label: (s3Label?.value || "").trim(), value: (s3Value?.value || "").trim(), unit: (s3Unit?.value || "").trim() }
+  ];
+} else {
+  preset.data.caption = (photoCaptionInput?.value || "").trim();
+}
 
       savePresets(presets);
       setEditorStatus("Saved ✅");

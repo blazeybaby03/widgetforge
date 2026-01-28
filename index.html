@@ -49,9 +49,38 @@
       <button id="backBtn" class="btn btnGhost">← Back</button>
       <h2 id="editorTitle">Edit preset</h2>
 
-      <label class="label">Content</label>
-      <textarea id="contentInput" class="input" rows="5"
-        placeholder="Type here..."></textarea>
+<div id="dashboardFields" style="display:none">
+  <label class="label">Quote</label>
+  <textarea id="contentInput" class="input" rows="3" placeholder="Type your quote..."></textarea>
+
+  <h3 style="margin:14px 0 6px">Quick Stats (3)</h3>
+
+  <label class="label">Stat 1 label</label>
+  <input id="s1Label" class="input" placeholder="e.g. Steps" />
+  <label class="label">Stat 1 value</label>
+  <input id="s1Value" class="input" placeholder="e.g. 7200" />
+  <label class="label">Stat 1 unit</label>
+  <input id="s1Unit" class="input" placeholder="e.g. steps" />
+
+  <label class="label">Stat 2 label</label>
+  <input id="s2Label" class="input" placeholder="e.g. Water" />
+  <label class="label">Stat 2 value</label>
+  <input id="s2Value" class="input" placeholder="e.g. 1.8" />
+  <label class="label">Stat 2 unit</label>
+  <input id="s2Unit" class="input" placeholder="e.g. L" />
+
+  <label class="label">Stat 3 label</label>
+  <input id="s3Label" class="input" placeholder="e.g. Focus" />
+  <label class="label">Stat 3 value</label>
+  <input id="s3Value" class="input" placeholder="e.g. 45" />
+  <label class="label">Stat 3 unit</label>
+  <input id="s3Unit" class="input" placeholder="e.g. min" />
+</div>
+
+<div id="photoFields" style="display:none">
+  <label class="label">Caption</label>
+  <textarea id="photoCaptionInput" class="input" rows="3" placeholder="Type your caption..."></textarea>
+</div>
 
       <button id="saveContentBtn" class="btn">Save content</button>
       <p id="editorStatus" class="status"></p>
