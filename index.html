@@ -16,7 +16,10 @@
     <p class="sub">Step 1: Save presets on your iPad</p>
   </header>
 
-  <main class="wrap">
+<main class="wrap">
+
+  <!-- HOME SCREEN -->
+  <section id="homeScreen">
     <section class="card">
       <h2>Create preset</h2>
 
@@ -38,8 +41,21 @@
       <div id="presetList" class="list"></div>
       <button id="wipeBtn" class="btn btnGhost">Delete ALL presets</button>
     </section>
-  </main>
+  </section>
 
-  <script src="app.js"></script>
-</body>
-</html>
+  <!-- EDITOR SCREEN -->
+  <section id="editorScreen" style="display:none">
+    <section class="card">
+      <button id="backBtn" class="btn btnGhost">← Back</button>
+      <h2 id="editorTitle">Edit preset</h2>
+
+      <label class="label">Content</label>
+      <textarea id="contentInput" class="input" rows="5"
+        placeholder="Type here..."></textarea>
+
+      <button id="saveContentBtn" class="btn">Save content</button>
+      <p id="editorStatus" class="status"></p>
+    </section>
+  </section>
+
+</main>

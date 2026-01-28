@@ -6,6 +6,15 @@ const createBtn = document.getElementById("createBtn");
 const presetList = document.getElementById("presetList");
 const wipeBtn = document.getElementById("wipeBtn");
 const statusEl = document.getElementById("status");
+const homeScreen = document.getElementById("homeScreen");
+const editorScreen = document.getElementById("editorScreen");
+const editorTitle = document.getElementById("editorTitle");
+const contentInput = document.getElementById("contentInput");
+const saveContentBtn = document.getElementById("saveContentBtn");
+const editorStatus = document.getElementById("editorStatus");
+const backBtn = document.getElementById("backBtn");
+
+let activePresetId = null;
 
 function uid() {
   return Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -47,7 +56,9 @@ function render() {
     row.innerHTML = `
       <div class="rowTop">
         <div>
-          <div style="font-weight:700">${escapeHtml(p.name)}</div>
+          <div style="font-weight:700;cursor:pointer" data-edit="${p.id}">
+  ${escapeHtml(p.name)}
+</div>
           <div class="badge">${p.type === "dashboard" ? "Dashboard" : "Photo Tile"}</div>
         </div>
         <button class="smallBtn" data-del="${p.id}">Delete</button>
@@ -65,6 +76,9 @@ function render() {
       savePresets(next);
       render();
       setStatus("Deleted ✅");
+	  presetList.querySelectorAll("[data-edit]").forEach(el => {
+  el.addEventListener("click", () => {
+    openEditor(el.getAttribute("data-edit"));
     });
   });
 }
@@ -117,3 +131,49 @@ wipeBtn.addEventListener("click", () => {
 });
 
 render();
+
+function openEditor(id) {
+  const presets = loadPresets();
+  const preset = presets.find(p => p.id === id);
+  if (!preset) return;
+
+  activePresetId = id;
+  homeScreen.style.display = "none";
+  editorScreen.style.display = "block";
+
+  editorTitle.textContent =
+    preset.type === "dashboard"
+      ? "Edit Dashboard Quote"
+      : "Edit Photo Caption";
+
+  contentInput.value =
+    preset.type === "dashboard"
+      ? preset.data.quote || ""
+      : preset.data.caption || "";
+}
+
+saveContentBtn.addEventListener("click", () => {
+  const presets = loadPresets();
+  const preset = presets.find(p => p.id === activePresetId);
+  if (!preset) return;
+
+  if (preset.type === "dashboard") {
+    preset.data.quote = contentInput.value.trim();
+  } else {
+    preset.data.caption = contentInput.value.trim();
+  }
+
+  savePresets(presets);
+  editorStatus.textContent = "Saved ✅";
+
+  setTimeout(() => {
+    editorStatus.textContent = "";
+  }, 1200);
+});
+
+backBtn.addEventListener("click", () => {
+  editorScreen.style.display = "none";
+  homeScreen.style.display = "block";
+  activePresetId = null;
+  render();
+});
