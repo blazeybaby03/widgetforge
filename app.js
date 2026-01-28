@@ -27,6 +27,7 @@ function escapeHtml(str) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  // Home screen elements
   const presetName = document.getElementById("presetName");
   const presetType = document.getElementById("presetType");
   const createBtn = document.getElementById("createBtn");
@@ -34,30 +35,32 @@ window.addEventListener("DOMContentLoaded", () => {
   const wipeBtn = document.getElementById("wipeBtn");
   const statusEl = document.getElementById("status");
 
+  // Editor elements
   const homeScreen = document.getElementById("homeScreen");
-const editorScreen = document.getElementById("editorScreen");
-const editorTitle = document.getElementById("editorTitle");
-
-const dashboardFields = document.getElementById("dashboardFields");
-const photoFields = document.getElementById("photoFields");
-
-const contentInput = document.getElementById("contentInput"); // dashboard quote
-const photoCaptionInput = document.getElementById("photoCaptionInput"); // photo caption
-
-const s1Label = document.getElementById("s1Label");
-const s1Value = document.getElementById("s1Value");
-const s1Unit  = document.getElementById("s1Unit");
-
-const s2Label = document.getElementById("s2Label");
-const s2Value = document.getElementById("s2Value");
-const s2Unit  = document.getElementById("s2Unit");
-
-const s3Label = document.getElementById("s3Label");
-const s3Value = document.getElementById("s3Value");
-const s3Unit  = document.getElementById("s3Unit");
+  const editorScreen = document.getElementById("editorScreen");
+  const editorTitle = document.getElementById("editorTitle");
   const saveContentBtn = document.getElementById("saveContentBtn");
   const editorStatus = document.getElementById("editorStatus");
   const backBtn = document.getElementById("backBtn");
+
+  // Step 3 fields
+  const dashboardFields = document.getElementById("dashboardFields");
+  const photoFields = document.getElementById("photoFields");
+
+  const contentInput = document.getElementById("contentInput"); // dashboard quote
+  const photoCaptionInput = document.getElementById("photoCaptionInput"); // photo caption
+
+  const s1Label = document.getElementById("s1Label");
+  const s1Value = document.getElementById("s1Value");
+  const s1Unit = document.getElementById("s1Unit");
+
+  const s2Label = document.getElementById("s2Label");
+  const s2Value = document.getElementById("s2Value");
+  const s2Unit = document.getElementById("s2Unit");
+
+  const s3Label = document.getElementById("s3Label");
+  const s3Value = document.getElementById("s3Value");
+  const s3Unit = document.getElementById("s3Unit");
 
   let activePresetId = null;
 
@@ -66,7 +69,7 @@ const s3Unit  = document.getElementById("s3Unit");
     statusEl.textContent = msg;
     setTimeout(() => {
       if (statusEl.textContent === msg) statusEl.textContent = "";
-    }, 1800);
+    }, 1600);
   }
 
   function setEditorStatus(msg) {
@@ -76,50 +79,6 @@ const s3Unit  = document.getElementById("s3Unit");
       if (editorStatus.textContent === msg) editorStatus.textContent = "";
     }, 1400);
   }
-
-  function openEditor(id) {
-    const presets = loadPresets();
-    const preset = presets.find(p => p.id === id);
-    if (!preset) return;
-
-    // If editor UI isn't present, don't crash
-    if (!homeScreen || !editorScreen || !editorTitle || !contentInput) {
-      alert("Editor screen is missing in index.html. We’ll fix that next.");
-      return;
-    }
-
-    activePresetId = id;
-    homeScreen.style.display = "none";
-    editorScreen.style.display = "block";
-
-	if (preset.type === "dashboard") {
-  editorTitle.textContent = "Edit Dashboard";
-  if (dashboardFields) dashboardFields.style.display = "block";
-  if (photoFields) photoFields.style.display = "none";
-
-  if (contentInput) contentInput.value = preset.data.quote || "";
-
-  const stats = preset.data.stats || [{}, {}, {}];
-
-  if (s1Label) s1Label.value = stats[0]?.label || "";
-  if (s1Value) s1Value.value = stats[0]?.value || "";
-  if (s1Unit)  s1Unit.value  = stats[0]?.unit  || "";
-
-  if (s2Label) s2Label.value = stats[1]?.label || "";
-  if (s2Value) s2Value.value = stats[1]?.value || "";
-  if (s2Unit)  s2Unit.value  = stats[1]?.unit  || "";
-
-  if (s3Label) s3Label.value = stats[2]?.label || "";
-  if (s3Value) s3Value.value = stats[2]?.value || "";
-  if (s3Unit)  s3Unit.value  = stats[2]?.unit  || "";
-
-} else {
-  editorTitle.textContent = "Edit Photo Tile";
-  if (dashboardFields) dashboardFields.style.display = "none";
-  if (photoFields) photoFields.style.display = "block";
-
-  if (photoCaptionInput) photoCaptionInput.value = preset.data.caption || "";
-}
 
   function render() {
     if (!presetList) return;
@@ -168,6 +127,45 @@ const s3Unit  = document.getElementById("s3Unit");
     });
   }
 
+  function openEditor(id) {
+    const presets = loadPresets();
+    const preset = presets.find(p => p.id === id);
+    if (!preset) return;
+
+    activePresetId = id;
+
+    if (homeScreen) homeScreen.style.display = "none";
+    if (editorScreen) editorScreen.style.display = "block";
+
+    if (preset.type === "dashboard") {
+      if (editorTitle) editorTitle.textContent = "Edit Dashboard";
+      if (dashboardFields) dashboardFields.style.display = "block";
+      if (photoFields) photoFields.style.display = "none";
+
+      if (contentInput) contentInput.value = preset.data?.quote || "";
+
+      const stats = preset.data?.stats?.length ? preset.data.stats : [{}, {}, {}];
+
+      if (s1Label) s1Label.value = stats[0]?.label || "";
+      if (s1Value) s1Value.value = stats[0]?.value || "";
+      if (s1Unit) s1Unit.value = stats[0]?.unit || "";
+
+      if (s2Label) s2Label.value = stats[1]?.label || "";
+      if (s2Value) s2Value.value = stats[1]?.value || "";
+      if (s2Unit) s2Unit.value = stats[1]?.unit || "";
+
+      if (s3Label) s3Label.value = stats[2]?.label || "";
+      if (s3Value) s3Value.value = stats[2]?.value || "";
+      if (s3Unit) s3Unit.value = stats[2]?.unit || "";
+    } else {
+      if (editorTitle) editorTitle.textContent = "Edit Photo Tile";
+      if (dashboardFields) dashboardFields.style.display = "none";
+      if (photoFields) photoFields.style.display = "block";
+
+      if (photoCaptionInput) photoCaptionInput.value = preset.data?.caption || "";
+    }
+  }
+
   // Create preset
   if (createBtn) {
     createBtn.addEventListener("click", () => {
@@ -187,7 +185,7 @@ const s3Unit  = document.getElementById("s3Unit");
         type,
         createdAt: Date.now(),
         data: type === "dashboard"
-          ? { quote: "", stats: [] }
+          ? { quote: "", stats: [{ label: "", value: "", unit: "" }, { label: "", value: "", unit: "" }, { label: "", value: "", unit: "" }] }
           : { caption: "", imageRef: null }
       };
 
@@ -199,7 +197,40 @@ const s3Unit  = document.getElementById("s3Unit");
     });
   }
 
-  // Wipe
+  // Save content
+  if (saveContentBtn) {
+    saveContentBtn.addEventListener("click", () => {
+      const presets = loadPresets();
+      const preset = presets.find(p => p.id === activePresetId);
+      if (!preset) return;
+
+      if (preset.type === "dashboard") {
+        preset.data.quote = (contentInput?.value || "").trim();
+        preset.data.stats = [
+          { label: (s1Label?.value || "").trim(), value: (s1Value?.value || "").trim(), unit: (s1Unit?.value || "").trim() },
+          { label: (s2Label?.value || "").trim(), value: (s2Value?.value || "").trim(), unit: (s2Unit?.value || "").trim() },
+          { label: (s3Label?.value || "").trim(), value: (s3Value?.value || "").trim(), unit: (s3Unit?.value || "").trim() }
+        ];
+      } else {
+        preset.data.caption = (photoCaptionInput?.value || "").trim();
+      }
+
+      savePresets(presets);
+      setEditorStatus("Saved ✅");
+    });
+  }
+
+  // Back
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      if (editorScreen) editorScreen.style.display = "none";
+      if (homeScreen) homeScreen.style.display = "block";
+      activePresetId = null;
+      render();
+    });
+  }
+
+  // Wipe all
   if (wipeBtn) {
     wipeBtn.addEventListener("click", () => {
       const ok = confirm("Delete ALL presets? This cannot be undone.");
@@ -207,40 +238,6 @@ const s3Unit  = document.getElementById("s3Unit");
       localStorage.removeItem(STORAGE_KEY);
       render();
       setStatus("All cleared 🧼");
-    });
-  }
-
-  // Save content (only if editor elements exist)
-  if (saveContentBtn) {
-    saveContentBtn.addEventListener("click", () => {
-      const presets = loadPresets();
-      const preset = presets.find(p => p.id === activePresetId);
-      if (!preset) return;
-
-	  if (preset.type === "dashboard") {
-  preset.data.quote = (contentInput?.value || "").trim();
-
-  preset.data.stats = [
-    { label: (s1Label?.value || "").trim(), value: (s1Value?.value || "").trim(), unit: (s1Unit?.value || "").trim() },
-    { label: (s2Label?.value || "").trim(), value: (s2Value?.value || "").trim(), unit: (s2Unit?.value || "").trim() },
-    { label: (s3Label?.value || "").trim(), value: (s3Value?.value || "").trim(), unit: (s3Unit?.value || "").trim() }
-  ];
-} else {
-  preset.data.caption = (photoCaptionInput?.value || "").trim();
-}
-
-      savePresets(presets);
-      setEditorStatus("Saved ✅");
-    });
-  }
-
-  // Back (only if editor elements exist)
-  if (backBtn) {
-    backBtn.addEventListener("click", () => {
-      if (editorScreen) editorScreen.style.display = "none";
-      if (homeScreen) homeScreen.style.display = "block";
-      activePresetId = null;
-      render();
     });
   }
 
