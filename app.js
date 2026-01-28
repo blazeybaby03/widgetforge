@@ -6,6 +6,7 @@ const createBtn = document.getElementById("createBtn");
 const presetList = document.getElementById("presetList");
 const wipeBtn = document.getElementById("wipeBtn");
 const statusEl = document.getElementById("status");
+
 const homeScreen = document.getElementById("homeScreen");
 const editorScreen = document.getElementById("editorScreen");
 const editorTitle = document.getElementById("editorTitle");
@@ -40,6 +41,22 @@ function setStatus(msg) {
   }, 1800);
 }
 
+function setEditorStatus(msg) {
+  editorStatus.textContent = msg;
+  setTimeout(() => {
+    if (editorStatus.textContent === msg) editorStatus.textContent = "";
+  }, 1400);
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function render() {
   const presets = loadPresets();
   presetList.innerHTML = "";
@@ -53,43 +70,40 @@ function render() {
     const row = document.createElement("div");
     row.className = "row";
 
-row.innerHTML = `
-  <div class="rowTop" data-edit="${p.id}" style="cursor:pointer">
-    <div>
-      <div style="font-weight:700">
-        ${escapeHtml(p.name)}
+    row.innerHTML = `
+      <div class="rowTop" data-edit="${p.id}" style="cursor:pointer">
+        <div>
+          <div style="font-weight:700">
+            ${escapeHtml(p.name)}
+          </div>
+          <div class="badge">${p.type === "dashboard" ? "Dashboard" : "Photo Tile"}</div>
+        </div>
+        <button class="smallBtn" data-del="${p.id}" type="button">Delete</button>
       </div>
-      <div class="badge">${p.type === "dashboard" ? "Dashboard" : "Photo Tile"}</div>
-    </div>
-    <button class="smallBtn" data-del="${p.id}">Delete</button>
-  </div>
-  <div style="color:#a8a8b3;font-size:13px">ID: ${p.id}</div>
-`;
+      <div style="color:#a8a8b3;font-size:13px">ID: ${p.id}</div>
+    `;
 
     presetList.appendChild(row);
   }
 
+  // Delete buttons
   presetList.querySelectorAll("[data-del]").forEach(btn => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation(); // important: prevents opening editor when deleting
       const id = btn.getAttribute("data-del");
       const next = loadPresets().filter(x => x.id !== id);
       savePresets(next);
       render();
       setStatus("Deleted ✅");
-	  presetList.querySelectorAll("[data-edit]").forEach(el => {
-  el.addEventListener("click", () => {
-    openEditor(el.getAttribute("data-edit"));
     });
   });
-}
 
-function escapeHtml(str) {
-  return String(str)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  // Tap to edit
+  presetList.querySelectorAll("[data-edit]").forEach(el => {
+    el.addEventListener("click", () => {
+      openEditor(el.getAttribute("data-edit"));
+    });
+  });
 }
 
 createBtn.addEventListener("click", () => {
@@ -109,7 +123,6 @@ createBtn.addEventListener("click", () => {
     name,
     type,
     createdAt: Date.now(),
-    // placeholder data for later steps:
     data: type === "dashboard"
       ? { quote: "", stats: [] }
       : { caption: "", imageRef: null }
@@ -130,8 +143,6 @@ wipeBtn.addEventListener("click", () => {
   setStatus("All cleared 🧼");
 });
 
-render();
-
 function openEditor(id) {
   const presets = loadPresets();
   const preset = presets.find(p => p.id === id);
@@ -148,8 +159,8 @@ function openEditor(id) {
 
   contentInput.value =
     preset.type === "dashboard"
-      ? preset.data.quote || ""
-      : preset.data.caption || "";
+      ? (preset.data.quote || "")
+      : (preset.data.caption || "");
 }
 
 saveContentBtn.addEventListener("click", () => {
@@ -164,11 +175,7 @@ saveContentBtn.addEventListener("click", () => {
   }
 
   savePresets(presets);
-  editorStatus.textContent = "Saved ✅";
-
-  setTimeout(() => {
-    editorStatus.textContent = "";
-  }, 1200);
+  setEditorStatus("Saved ✅");
 });
 
 backBtn.addEventListener("click", () => {
@@ -176,3 +183,6 @@ backBtn.addEventListener("click", () => {
   homeScreen.style.display = "block";
   activePresetId = null;
   render();
+});
+
+render();
