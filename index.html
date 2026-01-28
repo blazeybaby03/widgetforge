@@ -13,18 +13,18 @@
 <body>
   <header class="topbar">
     <h1>WidgetForge</h1>
-    <p class="sub" id="buildTag">Loading build…</p>
+    <p class="sub" id="buildTag">Loading…</p>
   </header>
 
   <main class="wrap">
 
-    <!-- HOME SCREEN -->
+    <!-- HOME -->
     <section id="homeScreen">
       <section class="card">
         <h2>Create preset</h2>
 
         <label class="label">Preset name</label>
-        <input id="presetName" class="input" placeholder="e.g. My Dashboard" />
+        <input id="presetName" class="input" />
 
         <label class="label">Preset type</label>
         <select id="presetType" class="input">
@@ -43,43 +43,41 @@
       </section>
     </section>
 
-    <!-- EDITOR SCREEN -->
+    <!-- EDITOR -->
     <section id="editorScreen" style="display:none">
       <section class="card">
         <button id="backBtn" class="btn btnGhost" type="button">← Back</button>
         <h2 id="editorTitle">Edit preset</h2>
 
+        <!-- DASHBOARD -->
         <div id="dashboardFields" style="display:none">
           <label class="label">Quote</label>
-          <textarea id="contentInput" class="input" rows="3" placeholder="Type your quote..."></textarea>
+          <textarea id="contentInput" class="input" rows="3"></textarea>
 
-          <h3 style="margin:14px 0 6px">Quick Stats (3)</h3>
+          <h3 style="margin:14px 0 6px">Quick Stats</h3>
 
-          <label class="label">Stat 1 label</label>
-          <input id="s1Label" class="input" placeholder="e.g. Steps" />
-          <label class="label">Stat 1 value</label>
-          <input id="s1Value" class="input" placeholder="e.g. 7200" />
-          <label class="label">Stat 1 unit</label>
-          <input id="s1Unit" class="input" placeholder="e.g. steps" />
+          <input id="s1Label" class="input" placeholder="Stat 1 label" />
+          <input id="s1Value" class="input" placeholder="Value" />
+          <input id="s1Unit" class="input" placeholder="Unit" />
 
-          <label class="label">Stat 2 label</label>
-          <input id="s2Label" class="input" placeholder="e.g. Water" />
-          <label class="label">Stat 2 value</label>
-          <input id="s2Value" class="input" placeholder="e.g. 1.8" />
-          <label class="label">Stat 2 unit</label>
-          <input id="s2Unit" class="input" placeholder="e.g. L" />
+          <input id="s2Label" class="input" placeholder="Stat 2 label" />
+          <input id="s2Value" class="input" placeholder="Value" />
+          <input id="s2Unit" class="input" placeholder="Unit" />
 
-          <label class="label">Stat 3 label</label>
-          <input id="s3Label" class="input" placeholder="e.g. Focus" />
-          <label class="label">Stat 3 value</label>
-          <input id="s3Value" class="input" placeholder="e.g. 45" />
-          <label class="label">Stat 3 unit</label>
-          <input id="s3Unit" class="input" placeholder="e.g. min" />
+          <input id="s3Label" class="input" placeholder="Stat 3 label" />
+          <input id="s3Value" class="input" placeholder="Value" />
+          <input id="s3Unit" class="input" placeholder="Unit" />
         </div>
 
+        <!-- PHOTO TILE -->
         <div id="photoFields" style="display:none">
+          <label class="label">Photo</label>
+          <input id="photoInput" type="file" accept="image/*" class="input" />
+
+          <img id="photoPreview" style="margin-top:10px; width:100%; border-radius:12px; display:none" />
+
           <label class="label">Caption</label>
-          <textarea id="photoCaptionInput" class="input" rows="3" placeholder="Type your caption..."></textarea>
+          <textarea id="photoCaptionInput" class="input" rows="3"></textarea>
         </div>
 
         <button id="saveContentBtn" class="btn" type="button">Save content</button>
@@ -89,7 +87,6 @@
 
   </main>
 
-  <!-- Cache-busting script URL -->
-  <script src="app.js?v=STEP3-1"></script>
+  <script src="app.js?v=STEP4-1"></script>
 </body>
 </html>
