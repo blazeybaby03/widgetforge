@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WidgetForge</title>
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#111111">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>WidgetForge</h1>
+    <p class="sub">Step 1: Save presets on your iPad</p>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>Create preset</h2>
+
+      <label class="label">Preset name</label>
+      <input id="presetName" class="input" placeholder="e.g. My Dashboard" />
+
+      <label class="label">Preset type</label>
+      <select id="presetType" class="input">
+        <option value="dashboard">Aesthetic Dashboard</option>
+        <option value="photoTile">Photo + Caption</option>
+      </select>
+
+      <button id="createBtn" class="btn">Save preset</button>
+      <p id="status" class="status"></p>
+    </section>
+
+    <section class="card">
+      <h2>Saved presets</h2>
+      <div id="presetList" class="list"></div>
+      <button id="wipeBtn" class="btn btnGhost">Delete ALL presets</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
