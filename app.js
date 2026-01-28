@@ -27,7 +27,7 @@ function escapeHtml(str) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  // Home screen elements
+  // HOME
   const presetName = document.getElementById("presetName");
   const presetType = document.getElementById("presetType");
   const createBtn = document.getElementById("createBtn");
@@ -35,15 +35,17 @@ window.addEventListener("DOMContentLoaded", () => {
   const wipeBtn = document.getElementById("wipeBtn");
   const statusEl = document.getElementById("status");
 
-  // Editor elements
+  // SCREENS
   const homeScreen = document.getElementById("homeScreen");
   const editorScreen = document.getElementById("editorScreen");
+
+  // EDITOR COMMON
   const editorTitle = document.getElementById("editorTitle");
   const saveContentBtn = document.getElementById("saveContentBtn");
   const editorStatus = document.getElementById("editorStatus");
   const backBtn = document.getElementById("backBtn");
 
-  // Step 3 fields
+  // STEP 3 FIELDS
   const dashboardFields = document.getElementById("dashboardFields");
   const photoFields = document.getElementById("photoFields");
 
@@ -79,6 +81,9 @@ window.addEventListener("DOMContentLoaded", () => {
       if (editorStatus.textContent === msg) editorStatus.textContent = "";
     }, 1400);
   }
+
+  // Proof JS is running (quietly)
+  setStatus("JS running ✅");
 
   function render() {
     if (!presetList) return;
@@ -144,19 +149,21 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (contentInput) contentInput.value = preset.data?.quote || "";
 
-      const stats = preset.data?.stats?.length ? preset.data.stats : [{}, {}, {}];
+      const stats = Array.isArray(preset.data?.stats) && preset.data.stats.length
+        ? preset.data.stats
+        : [{}, {}, {}];
 
       if (s1Label) s1Label.value = stats[0]?.label || "";
       if (s1Value) s1Value.value = stats[0]?.value || "";
-      if (s1Unit) s1Unit.value = stats[0]?.unit || "";
+      if (s1Unit)  s1Unit.value  = stats[0]?.unit  || "";
 
       if (s2Label) s2Label.value = stats[1]?.label || "";
       if (s2Value) s2Value.value = stats[1]?.value || "";
-      if (s2Unit) s2Unit.value = stats[1]?.unit || "";
+      if (s2Unit)  s2Unit.value  = stats[1]?.unit  || "";
 
       if (s3Label) s3Label.value = stats[2]?.label || "";
       if (s3Value) s3Value.value = stats[2]?.value || "";
-      if (s3Unit) s3Unit.value = stats[2]?.unit || "";
+      if (s3Unit)  s3Unit.value  = stats[2]?.unit  || "";
     } else {
       if (editorTitle) editorTitle.textContent = "Edit Photo Tile";
       if (dashboardFields) dashboardFields.style.display = "none";
@@ -166,7 +173,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Create preset
+  // CREATE PRESET
   if (createBtn) {
     createBtn.addEventListener("click", () => {
       const name = (presetName?.value || "").trim();
@@ -179,25 +186,34 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       const presets = loadPresets();
+
       const preset = {
         id: uid(),
         name,
         type,
         createdAt: Date.now(),
         data: type === "dashboard"
-          ? { quote: "", stats: [{ label: "", value: "", unit: "" }, { label: "", value: "", unit: "" }, { label: "", value: "", unit: "" }] }
+          ? {
+              quote: "",
+              stats: [
+                { label: "", value: "", unit: "" },
+                { label: "", value: "", unit: "" },
+                { label: "", value: "", unit: "" }
+              ]
+            }
           : { caption: "", imageRef: null }
       };
 
       presets.unshift(preset);
       savePresets(presets);
+
       if (presetName) presetName.value = "";
       render();
       setStatus("Saved ✅");
     });
   }
 
-  // Save content
+  // SAVE CONTENT
   if (saveContentBtn) {
     saveContentBtn.addEventListener("click", () => {
       const presets = loadPresets();
@@ -220,7 +236,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Back
+  // BACK
   if (backBtn) {
     backBtn.addEventListener("click", () => {
       if (editorScreen) editorScreen.style.display = "none";
@@ -230,7 +246,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Wipe all
+  // WIPE ALL
   if (wipeBtn) {
     wipeBtn.addEventListener("click", () => {
       const ok = confirm("Delete ALL presets? This cannot be undone.");

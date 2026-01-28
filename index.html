@@ -7,88 +7,89 @@
 
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#111111">
-
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <header class="topbar">
     <h1>WidgetForge</h1>
-    <p class="sub">Step 1: Save presets on your iPad</p>
+    <p class="sub">Presets + Editor (Step 3)</p>
   </header>
 
-<main class="wrap">
+  <main class="wrap">
 
-  <!-- HOME SCREEN -->
-  <section id="homeScreen">
-    <section class="card">
-      <h2>Create preset</h2>
+    <!-- HOME SCREEN -->
+    <section id="homeScreen">
+      <section class="card">
+        <h2>Create preset</h2>
 
-      <label class="label">Preset name</label>
-      <input id="presetName" class="input" placeholder="e.g. My Dashboard" />
+        <label class="label">Preset name</label>
+        <input id="presetName" class="input" placeholder="e.g. My Dashboard" />
 
-      <label class="label">Preset type</label>
-      <select id="presetType" class="input">
-        <option value="dashboard">Aesthetic Dashboard</option>
-        <option value="photoTile">Photo + Caption</option>
-      </select>
+        <label class="label">Preset type</label>
+        <select id="presetType" class="input">
+          <option value="dashboard">Aesthetic Dashboard</option>
+          <option value="photoTile">Photo + Caption</option>
+        </select>
 
-      <button id="createBtn" class="btn">Save preset</button>
-      <p id="status" class="status"></p>
+        <button id="createBtn" class="btn" type="button">Save preset</button>
+        <p id="status" class="status"></p>
+      </section>
+
+      <section class="card">
+        <h2>Saved presets</h2>
+        <div id="presetList" class="list"></div>
+        <button id="wipeBtn" class="btn btnGhost" type="button">Delete ALL presets</button>
+      </section>
     </section>
 
-    <section class="card">
-      <h2>Saved presets</h2>
-      <div id="presetList" class="list"></div>
-      <button id="wipeBtn" class="btn btnGhost">Delete ALL presets</button>
+    <!-- EDITOR SCREEN -->
+    <section id="editorScreen" style="display:none">
+      <section class="card">
+        <button id="backBtn" class="btn btnGhost" type="button">← Back</button>
+        <h2 id="editorTitle">Edit preset</h2>
+
+        <div id="dashboardFields" style="display:none">
+          <label class="label">Quote</label>
+          <textarea id="contentInput" class="input" rows="3" placeholder="Type your quote..."></textarea>
+
+          <h3 style="margin:14px 0 6px">Quick Stats (3)</h3>
+
+          <label class="label">Stat 1 label</label>
+          <input id="s1Label" class="input" placeholder="e.g. Steps" />
+          <label class="label">Stat 1 value</label>
+          <input id="s1Value" class="input" placeholder="e.g. 7200" />
+          <label class="label">Stat 1 unit</label>
+          <input id="s1Unit" class="input" placeholder="e.g. steps" />
+
+          <label class="label">Stat 2 label</label>
+          <input id="s2Label" class="input" placeholder="e.g. Water" />
+          <label class="label">Stat 2 value</label>
+          <input id="s2Value" class="input" placeholder="e.g. 1.8" />
+          <label class="label">Stat 2 unit</label>
+          <input id="s2Unit" class="input" placeholder="e.g. L" />
+
+          <label class="label">Stat 3 label</label>
+          <input id="s3Label" class="input" placeholder="e.g. Focus" />
+          <label class="label">Stat 3 value</label>
+          <input id="s3Value" class="input" placeholder="e.g. 45" />
+          <label class="label">Stat 3 unit</label>
+          <input id="s3Unit" class="input" placeholder="e.g. min" />
+        </div>
+
+        <div id="photoFields" style="display:none">
+          <label class="label">Caption</label>
+          <textarea id="photoCaptionInput" class="input" rows="3" placeholder="Type your caption..."></textarea>
+        </div>
+
+        <button id="saveContentBtn" class="btn" type="button">Save content</button>
+        <p id="editorStatus" class="status"></p>
+      </section>
     </section>
-  </section>
 
-  <!-- EDITOR SCREEN -->
-  <section id="editorScreen" style="display:none">
-    <section class="card">
-      <button id="backBtn" class="btn btnGhost">← Back</button>
-      <h2 id="editorTitle">Edit preset</h2>
+  </main>
 
-<div id="dashboardFields" style="display:none">
-  <label class="label">Quote</label>
-  <textarea id="contentInput" class="input" rows="3" placeholder="Type your quote..."></textarea>
-
-  <h3 style="margin:14px 0 6px">Quick Stats (3)</h3>
-
-  <label class="label">Stat 1 label</label>
-  <input id="s1Label" class="input" placeholder="e.g. Steps" />
-  <label class="label">Stat 1 value</label>
-  <input id="s1Value" class="input" placeholder="e.g. 7200" />
-  <label class="label">Stat 1 unit</label>
-  <input id="s1Unit" class="input" placeholder="e.g. steps" />
-
-  <label class="label">Stat 2 label</label>
-  <input id="s2Label" class="input" placeholder="e.g. Water" />
-  <label class="label">Stat 2 value</label>
-  <input id="s2Value" class="input" placeholder="e.g. 1.8" />
-  <label class="label">Stat 2 unit</label>
-  <input id="s2Unit" class="input" placeholder="e.g. L" />
-
-  <label class="label">Stat 3 label</label>
-  <input id="s3Label" class="input" placeholder="e.g. Focus" />
-  <label class="label">Stat 3 value</label>
-  <input id="s3Value" class="input" placeholder="e.g. 45" />
-  <label class="label">Stat 3 unit</label>
-  <input id="s3Unit" class="input" placeholder="e.g. min" />
-</div>
-
-<div id="photoFields" style="display:none">
-  <label class="label">Caption</label>
-  <textarea id="photoCaptionInput" class="input" rows="3" placeholder="Type your caption..."></textarea>
-</div>
-
-      <button id="saveContentBtn" class="btn">Save content</button>
-      <p id="editorStatus" class="status"></p>
-    </section>
-  </section>
-
-</main>
-
-<script src="app.js"></script>
+  <!-- IMPORTANT: app.js MUST be here -->
+  <script src="app.js"></script>
 </body>
 </html>
