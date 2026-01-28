@@ -1,5 +1,5 @@
 const STORAGE_KEY = "wf_presets_v1";
-const BUILD = "Step 4 build: STEP4-1 📸";
+const BUILD = "Step 5 build: STEP5-1 👀";
 
 function uid() {
   return Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -35,37 +35,64 @@ window.addEventListener("DOMContentLoaded", () => {
   const saveContentBtn = document.getElementById("saveContentBtn");
   const editorStatus = document.getElementById("editorStatus");
 
+  const previewBox = document.getElementById("previewBox");
+
   const dashboardFields = document.getElementById("dashboardFields");
   const photoFields = document.getElementById("photoFields");
 
   const contentInput = document.getElementById("contentInput");
+
+  const s1Label = document.getElementById("s1Label");
+  const s1Value = document.getElementById("s1Value");
+  const s1Unit = document.getElementById("s1Unit");
+
+  const s2Label = document.getElementById("s2Label");
+  const s2Value = document.getElementById("s2Value");
+  const s2Unit = document.getElementById("s2Unit");
+
+  const s3Label = document.getElementById("s3Label");
+  const s3Value = document.getElementById("s3Value");
+  const s3Unit = document.getElementById("s3Unit");
+
+  const choosePhotoBtn = document.getElementById("choosePhotoBtn");
   const photoInput = document.getElementById("photoInput");
   const photoPreview = document.getElementById("photoPreview");
   const photoCaptionInput = document.getElementById("photoCaptionInput");
 
   let activePresetId = null;
-  let tempImageData = null;
+  let tempImage = null;
 
-  function setStatus(msg) {
-    statusEl.textContent = msg;
-    setTimeout(() => statusEl.textContent = "", 1500);
+  function renderPreviewDashboard() {
+    previewBox.innerHTML = `
+      <div style="font-size:16px; margin-bottom:10px">${contentInput.value || "Your quote here…"}</div>
+      <div style="display:flex; gap:10px; font-size:13px">
+        <div><strong>${s1Value.value || "—"}</strong> ${s1Unit.value}<br>${s1Label.value}</div>
+        <div><strong>${s2Value.value || "—"}</strong> ${s2Unit.value}<br>${s2Label.value}</div>
+        <div><strong>${s3Value.value || "—"}</strong> ${s3Unit.value}<br>${s3Label.value}</div>
+      </div>
+    `;
+  }
+
+  function renderPreviewPhoto() {
+    previewBox.innerHTML = `
+      ${tempImage ? `<img src="${tempImage}" style="width:100%;border-radius:12px;margin-bottom:8px"/>` : ""}
+      <div style="font-size:14px">${photoCaptionInput.value || "Your caption here…"}</div>
+    `;
+  }
+
+  function renderPreview(type) {
+    if (type === "dashboard") renderPreviewDashboard();
+    else renderPreviewPhoto();
   }
 
   function render() {
-    const presets = loadPresets();
     presetList.innerHTML = "";
-
-    presets.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "row";
-      div.innerHTML = `
-        <div class="rowTop" data-id="${p.id}" style="cursor:pointer">
-          <strong>${p.name}</strong>
-          <span class="badge">${p.type}</span>
-        </div>
-      `;
-      div.onclick = () => openEditor(p.id);
-      presetList.appendChild(div);
+    loadPresets().forEach(p => {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.textContent = p.name;
+      row.onclick = () => openEditor(p.id);
+      presetList.appendChild(row);
     });
   }
 
@@ -77,23 +104,33 @@ window.addEventListener("DOMContentLoaded", () => {
     homeScreen.style.display = "none";
     editorScreen.style.display = "block";
 
-    if (preset.type === "photoTile") {
+    if (preset.type === "dashboard") {
+      editorTitle.textContent = "Edit Dashboard";
+      dashboardFields.style.display = "block";
+      photoFields.style.display = "none";
+
+      contentInput.value = preset.data.quote || "";
+
+      renderPreview("dashboard");
+    } else {
       editorTitle.textContent = "Edit Photo Tile";
       dashboardFields.style.display = "none";
       photoFields.style.display = "block";
 
       photoCaptionInput.value = preset.data.caption || "";
-      if (preset.data.image) {
-        photoPreview.src = preset.data.image;
-        photoPreview.style.display = "block";
-      }
-    } else {
-      editorTitle.textContent = "Edit Dashboard";
-      photoFields.style.display = "none";
-      dashboardFields.style.display = "block";
-      contentInput.value = preset.data.quote || "";
+      tempImage = preset.data.image || null;
+      if (tempImage) photoPreview.src = tempImage;
+
+      renderPreview("photo");
     }
   }
+
+  [contentInput, s1Label, s1Value, s1Unit, s2Label, s2Value, s2Unit, s3Label, s3Value, s3Unit]
+    .forEach(el => el && el.addEventListener("input", () => renderPreview("dashboard")));
+
+  photoCaptionInput.addEventListener("input", () => renderPreview("photo"));
+
+  choosePhotoBtn.onclick = () => photoInput.click();
 
   photoInput.onchange = e => {
     const file = e.target.files[0];
@@ -101,9 +138,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const reader = new FileReader();
     reader.onload = () => {
-      tempImageData = reader.result;
-      photoPreview.src = tempImageData;
+      tempImage = reader.result;
+      photoPreview.src = tempImage;
       photoPreview.style.display = "block";
+      renderPreview("photo");
     };
     reader.readAsDataURL(file);
   };
@@ -113,11 +151,11 @@ window.addEventListener("DOMContentLoaded", () => {
     const preset = presets.find(p => p.id === activePresetId);
     if (!preset) return;
 
-    if (preset.type === "photoTile") {
-      preset.data.caption = photoCaptionInput.value || "";
-      if (tempImageData) preset.data.image = tempImageData;
+    if (preset.type === "dashboard") {
+      preset.data.quote = contentInput.value;
     } else {
-      preset.data.quote = contentInput.value || "";
+      preset.data.caption = photoCaptionInput.value;
+      preset.data.image = tempImage;
     }
 
     savePresets(presets);
@@ -128,27 +166,25 @@ window.addEventListener("DOMContentLoaded", () => {
   backBtn.onclick = () => {
     editorScreen.style.display = "none";
     homeScreen.style.display = "block";
-    tempImageData = null;
     render();
   };
 
   createBtn.onclick = () => {
-    if (!presetName.value) return setStatus("Name required");
+    if (!presetName.value) return;
 
     const presets = loadPresets();
     presets.unshift({
       id: uid(),
       name: presetName.value,
       type: presetType.value,
-      data: presetType.value === "photoTile"
-        ? { caption: "", image: null }
-        : { quote: "" }
+      data: presetType.value === "dashboard"
+        ? { quote: "", stats: [] }
+        : { caption: "", image: null }
     });
 
     savePresets(presets);
     presetName.value = "";
     render();
-    setStatus("Saved");
   };
 
   wipeBtn.onclick = () => {
