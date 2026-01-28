@@ -1,5 +1,5 @@
 const STORAGE_KEY = "wf_presets_v1";
-const BUILD = "Step 5 build: STEP5-1 👀";
+const BUILD = "Step 5 build: STEP5-2 👀 (preview fixed)";
 
 function uid() {
   return Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -26,14 +26,12 @@ window.addEventListener("DOMContentLoaded", () => {
   const createBtn = document.getElementById("createBtn");
   const presetList = document.getElementById("presetList");
   const wipeBtn = document.getElementById("wipeBtn");
-  const statusEl = document.getElementById("status");
 
   const homeScreen = document.getElementById("homeScreen");
   const editorScreen = document.getElementById("editorScreen");
   const editorTitle = document.getElementById("editorTitle");
   const backBtn = document.getElementById("backBtn");
   const saveContentBtn = document.getElementById("saveContentBtn");
-  const editorStatus = document.getElementById("editorStatus");
 
   const previewBox = document.getElementById("previewBox");
 
@@ -45,11 +43,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const s1Label = document.getElementById("s1Label");
   const s1Value = document.getElementById("s1Value");
   const s1Unit = document.getElementById("s1Unit");
-
   const s2Label = document.getElementById("s2Label");
   const s2Value = document.getElementById("s2Value");
   const s2Unit = document.getElementById("s2Unit");
-
   const s3Label = document.getElementById("s3Label");
   const s3Value = document.getElementById("s3Value");
   const s3Unit = document.getElementById("s3Unit");
@@ -62,10 +58,12 @@ window.addEventListener("DOMContentLoaded", () => {
   let activePresetId = null;
   let tempImage = null;
 
-  function renderPreviewDashboard() {
+  function previewDashboard() {
     previewBox.innerHTML = `
-      <div style="font-size:16px; margin-bottom:10px">${contentInput.value || "Your quote here…"}</div>
-      <div style="display:flex; gap:10px; font-size:13px">
+      <div style="font-size:16px;margin-bottom:10px">
+        ${contentInput.value || "Your quote here…"}
+      </div>
+      <div style="display:flex;gap:12px;font-size:13px">
         <div><strong>${s1Value.value || "—"}</strong> ${s1Unit.value}<br>${s1Label.value}</div>
         <div><strong>${s2Value.value || "—"}</strong> ${s2Unit.value}<br>${s2Label.value}</div>
         <div><strong>${s3Value.value || "—"}</strong> ${s3Unit.value}<br>${s3Label.value}</div>
@@ -73,16 +71,11 @@ window.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
-  function renderPreviewPhoto() {
+  function previewPhoto() {
     previewBox.innerHTML = `
       ${tempImage ? `<img src="${tempImage}" style="width:100%;border-radius:12px;margin-bottom:8px"/>` : ""}
       <div style="font-size:14px">${photoCaptionInput.value || "Your caption here…"}</div>
     `;
-  }
-
-  function renderPreview(type) {
-    if (type === "dashboard") renderPreviewDashboard();
-    else renderPreviewPhoto();
   }
 
   function render() {
@@ -110,8 +103,7 @@ window.addEventListener("DOMContentLoaded", () => {
       photoFields.style.display = "none";
 
       contentInput.value = preset.data.quote || "";
-
-      renderPreview("dashboard");
+      previewDashboard();
     } else {
       editorTitle.textContent = "Edit Photo Tile";
       dashboardFields.style.display = "none";
@@ -119,29 +111,33 @@ window.addEventListener("DOMContentLoaded", () => {
 
       photoCaptionInput.value = preset.data.caption || "";
       tempImage = preset.data.image || null;
-      if (tempImage) photoPreview.src = tempImage;
-
-      renderPreview("photo");
+      if (tempImage) {
+        photoPreview.src = tempImage;
+        photoPreview.style.display = "block";
+      }
+      previewPhoto();
     }
   }
 
-  [contentInput, s1Label, s1Value, s1Unit, s2Label, s2Value, s2Unit, s3Label, s3Value, s3Unit]
-    .forEach(el => el && el.addEventListener("input", () => renderPreview("dashboard")));
+  [
+    contentInput, s1Label, s1Value, s1Unit,
+    s2Label, s2Value, s2Unit,
+    s3Label, s3Value, s3Unit
+  ].forEach(el => el.addEventListener("input", previewDashboard));
 
-  photoCaptionInput.addEventListener("input", () => renderPreview("photo"));
+  photoCaptionInput.addEventListener("input", previewPhoto);
 
   choosePhotoBtn.onclick = () => photoInput.click();
 
   photoInput.onchange = e => {
     const file = e.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = () => {
       tempImage = reader.result;
       photoPreview.src = tempImage;
       photoPreview.style.display = "block";
-      renderPreview("photo");
+      previewPhoto();
     };
     reader.readAsDataURL(file);
   };
@@ -159,8 +155,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     savePresets(presets);
-    editorStatus.textContent = "Saved ✅";
-    setTimeout(() => editorStatus.textContent = "", 1200);
   };
 
   backBtn.onclick = () => {
@@ -171,17 +165,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
   createBtn.onclick = () => {
     if (!presetName.value) return;
-
     const presets = loadPresets();
     presets.unshift({
       id: uid(),
       name: presetName.value,
       type: presetType.value,
       data: presetType.value === "dashboard"
-        ? { quote: "", stats: [] }
+        ? { quote: "" }
         : { caption: "", image: null }
     });
-
     savePresets(presets);
     presetName.value = "";
     render();
