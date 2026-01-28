@@ -53,18 +53,18 @@ function render() {
     const row = document.createElement("div");
     row.className = "row";
 
-    row.innerHTML = `
-      <div class="rowTop">
-        <div>
-          <div style="font-weight:700;cursor:pointer" data-edit="${p.id}">
-  ${escapeHtml(p.name)}
-</div>
-          <div class="badge">${p.type === "dashboard" ? "Dashboard" : "Photo Tile"}</div>
-        </div>
-        <button class="smallBtn" data-del="${p.id}">Delete</button>
+row.innerHTML = `
+  <div class="rowTop" data-edit="${p.id}" style="cursor:pointer">
+    <div>
+      <div style="font-weight:700">
+        ${escapeHtml(p.name)}
       </div>
-      <div style="color:#a8a8b3;font-size:13px">ID: ${p.id}</div>
-    `;
+      <div class="badge">${p.type === "dashboard" ? "Dashboard" : "Photo Tile"}</div>
+    </div>
+    <button class="smallBtn" data-del="${p.id}">Delete</button>
+  </div>
+  <div style="color:#a8a8b3;font-size:13px">ID: ${p.id}</div>
+`;
 
     presetList.appendChild(row);
   }
@@ -176,4 +176,3 @@ backBtn.addEventListener("click", () => {
   homeScreen.style.display = "block";
   activePresetId = null;
   render();
-});
