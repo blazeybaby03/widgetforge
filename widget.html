@@ -26,6 +26,7 @@
 
   <script>
     const STORAGE_KEY = "wf_presets_v1";
+
     function loadPresets() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -37,30 +38,53 @@
 
     const id = (location.hash || "").replace("#", "");
     const box = document.getElementById("box");
-    const preset = loadPresets().find(p => p.id === id);
+    let lastSnapshot = "";
 
-    if (!preset) {
-      box.textContent = "Preset not found. Go back and export again.";
-    } else if (preset.type === "photoTile") {
-      box.innerHTML = `
-        ${preset.data.image ? `<img src="${preset.data.image}">` : ""}
-        <div style="font-size:16px">${preset.data.caption || ""}</div>
-      `;
-    } else {
-      const quote = preset.data.quote || "";
-      const stats = Array.isArray(preset.data.stats) ? preset.data.stats : [];
-      const s1 = stats[0] || {};
-      const s2 = stats[1] || {};
-      const s3 = stats[2] || {};
-      box.innerHTML = `
-        <div style="font-size:18px;margin-bottom:12px">${quote}</div>
-        <div style="display:flex;gap:12px;font-size:13px">
-          <div><strong>${s1.value || "—"}</strong> ${s1.unit || ""}<br>${s1.label || ""}</div>
-          <div><strong>${s2.value || "—"}</strong> ${s2.unit || ""}<br>${s2.label || ""}</div>
-          <div><strong>${s3.value || "—"}</strong> ${s3.unit || ""}<br>${s3.label || ""}</div>
-        </div>
-      `;
+    function render(preset) {
+      if (!preset) {
+        box.textContent = "Preset not found. Go back and export again.";
+        return;
+      }
+
+      if (preset.type === "photoTile") {
+        box.innerHTML = `
+          ${preset.data.image ? `<img src="${preset.data.image}">` : ""}
+          <div style="font-size:16px">${preset.data.caption || ""}</div>
+        `;
+      } else {
+        const quote = preset.data.quote || "";
+        const stats = Array.isArray(preset.data.stats) ? preset.data.stats : [];
+        const s1 = stats[0] || {};
+        const s2 = stats[1] || {};
+        const s3 = stats[2] || {};
+        box.innerHTML = `
+          <div style="font-size:18px;margin-bottom:12px">${quote}</div>
+          <div style="display:flex;gap:12px;font-size:13px">
+            <div><strong>${s1.value || "—"}</strong> ${s1.unit || ""}<br>${s1.label || ""}</div>
+            <div><strong>${s2.value || "—"}</strong> ${s2.unit || ""}<br>${s2.label || ""}</div>
+            <div><strong>${s3.value || "—"}</strong> ${s3.unit || ""}<br>${s3.label || ""}</div>
+          </div>
+        `;
+      }
     }
+
+    function tick() {
+      const preset = loadPresets().find(p => p.id === id);
+
+      // Snapshot to detect changes
+      const snap = preset ? JSON.stringify(preset) : "missing";
+
+      if (snap !== lastSnapshot) {
+        lastSnapshot = snap;
+        render(preset);
+      }
+    }
+
+    // Initial render
+    tick();
+
+    // Auto-refresh every 2 seconds
+    setInterval(tick, 2000);
   </script>
 </body>
 </html>
