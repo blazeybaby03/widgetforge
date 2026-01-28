@@ -1,3 +1,4 @@
+alert("app.js loaded");
 const STORAGE_KEY = "wf_presets_v1";
 
 function uid() {
